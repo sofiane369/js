@@ -1,1 +1,44 @@
-!function(){let t=document.currentScript,e=t?.getAttribute("data-allowed")||"",r=t?.hasAttribute("debug")||!1,i=e.split(",").map(t=>t.trim()).filter(Boolean);window.addEventListener("message",t=>{let e=new URL(t.origin).hostname;if(!i.includes(e))return;let a=t.data||{},n=a.t,s=a.n,c=a.d||{},l=a.r||{};if(s){if(r){if(!1!==l.a&&console.log("posthog ==> ",s,JSON.stringify(c)),!1!==l.x){let u="";"s"===n&&(u="track"),"c"===n&&(u="trackCustom"),console.log("meta ==>",u,s,JSON.stringify(c))}return}!1!==l.a&&posthog.capture(s,c),!1!==l.x&&("s"===n&&fbq("track",s,c),"c"===n&&fbq("trackCustom",s,c))}})}();
+(function () {
+  // Récupère la liste des domaines autorisés passée via script tag
+  const scriptTag = document.currentScript;
+  const allowedAttr = scriptTag?.getAttribute("data-allowed") || "";
+  const debug = scriptTag?.hasAttribute("debug") || false;
+  const ALLOWED_DOMAINS = allowedAttr
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  // Listener d’événement
+  window.addEventListener("message", (e) => {
+    const host = new URL(e.origin).hostname;
+    if (!ALLOWED_DOMAINS.includes(host)) return;
+
+    const msg = e.data || {};
+    const type = msg.t;
+    const name = msg.n;
+    const params = msg.d || {};
+    const route = msg.r || {};
+
+    if (!name) return;
+
+    if (debug) {
+      if (route.a !== false) {
+        console.log("posthog ==> ", name, JSON.stringify(params));
+        posthog.capture(name, params);
+      }
+      if (route.x !== false) {
+        let x = "";
+        if (type === "s") x = "track";
+        if (type === "c") x = "trackCustom";
+        console.log("meta ==>", x, name, JSON.stringify(params));
+      }
+      return;
+    }
+
+    if (route.a !== false) posthog.capture(name, params);
+    if (route.x !== false) {
+      if (type === "s") fbq("track", name, params);
+      if (type === "c") fbq("trackCustom", name, params);
+    }
+  });
+})();
