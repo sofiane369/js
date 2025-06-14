@@ -10,6 +10,7 @@
 
   // Listener d’événement
   window.addEventListener("message", (e) => {
+    console.log("event recieved ********");
     const host = new URL(e.origin).hostname;
     if (!ALLOWED_DOMAINS.includes(host)) return;
 
