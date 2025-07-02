@@ -20,25 +20,25 @@
     const params = msg.d || {};
     const route = msg.r || {};
 
+    const aParams = params.a || {};
+    const xParams = params.x || {};
+
     if (!name) return;
 
     if (debug) {
       console.log("event data ==>", JSON.stringify(e))
       if (route.a !== false) {
-        console.log("posthog ==> ", name, JSON.stringify(params));
-        posthog.capture(name, params);
+        console.log("posthog ==> ", name, JSON.stringify(aParams));
+        posthog.capture(name, aParams);
       }
       if (route.x !== false) {
         let x = "";
         if (type === "s") x = "track";
         if (type === "c") x = "trackCustom";
-        console.log("meta ==>", x, name, JSON.stringify(params));
+        console.log("meta ==>", x, name, JSON.stringify(xParams));
       }
       return;
     }
-
-    const aParams = params.a || {};
-    const xParams = params.x || {};
 
     if (route.a !== false) posthog.capture(name, aParams);
     if (route.x !== false) {
