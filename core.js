@@ -23,6 +23,7 @@
     if (!name) return;
 
     if (debug) {
+      console.log("event data ==>", JSON.stringify(e))
       if (route.a !== false) {
         console.log("posthog ==> ", name, JSON.stringify(params));
         posthog.capture(name, params);
@@ -36,10 +37,13 @@
       return;
     }
 
-    if (route.a !== false) posthog.capture(name, params);
+    const aParams = params.a || {};
+    const xParams = params.x || {};
+
+    if (route.a !== false) posthog.capture(name, aParams);
     if (route.x !== false) {
-      if (type === "s") fbq("track", name, params);
-      if (type === "c") fbq("trackCustom", name, params);
+      if (type === "s") fbq("track", name, xParams);
+      if (type === "c") fbq("trackCustom", name, xParams);
     }
   });
 })();
