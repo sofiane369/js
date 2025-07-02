@@ -26,7 +26,7 @@
     if (!name) return;
 
     if (debug) {
-      console.log("event data ==>", JSON.stringify(e))
+      console.log("event message ==>", JSON.stringify(msg))
       if (route.a !== false) {
         console.log("posthog ==> ", name, JSON.stringify(aParams));
         posthog.capture(name, aParams);
